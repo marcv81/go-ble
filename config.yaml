@@ -1,0 +1,18 @@
+---
+port: /dev/ttyACM0
+
+devices:
+  - type: mi_thermometer
+    mac_address: a4:c1:38:8f:ed:57
+    tags: 
+      location: bedroom
+  - type: mi_thermometer
+    mac_address: a4:c1:38:d4:89:e3
+    tags: 
+      location: bathroom
+  - type: mi_thermometer
+    mac_address: a4:c1:38:d3:c0:6a
+    tags: 
+      location: window
+  - type: mi_scale
+    mac_address: 5c:ca:d3:ed:7f:27
