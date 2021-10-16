@@ -2,12 +2,14 @@ package main
 
 import (
 	"errors"
+	"fmt"
 	"log"
 	"os"
 
 	"github.com/jacobsa/go-serial/serial"
 	"github.com/marcv81/go-ble/ble"
 	"github.com/marcv81/go-ble/cc2540"
+	"github.com/marcv81/go-ble/point"
 )
 
 var errParameter = errors.New("mandatory first parameter: config filename")
@@ -43,7 +45,13 @@ func main() {
 	dev := cc2540.Scanner{
 		ReadWriter: readWriter,
 		Callback: func(info *ble.DeviceInfo) {
-			process(processors, *info)
+			process(processors, *info, func(p point.Point) {
+				s, err := p.String()
+				if err != nil {
+					return
+				}
+				fmt.Println(s)
+			})
 		},
 	}
 	dev.Scan()

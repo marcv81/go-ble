@@ -1,8 +1,6 @@
 package main
 
 import (
-	"fmt"
-
 	"github.com/marcv81/go-ble/ble"
 	"github.com/marcv81/go-ble/point"
 	"github.com/marcv81/go-ble/sensors"
@@ -42,9 +40,9 @@ func indexProcessors(devices []DeviceConfig) map[string]processor {
 	return processors
 }
 
-// Processes the scanned BLE devices information.
-// Prints the discovered fields and tags in InfluxDB line format.
-func process(processors map[string]processor, info ble.DeviceInfo) {
+// Attempts to convert BLE scan data into a data point.
+// If successful, calls a function on the data point.
+func process(processors map[string]processor, info ble.DeviceInfo, callback func(point.Point)) {
 	if _, ok := processors[info.MacAddress]; !ok {
 		return
 	}
@@ -56,15 +54,10 @@ func process(processors map[string]processor, info ble.DeviceInfo) {
 		}
 		fields = append(fields, point.NamedValue{Name: "rssi", Value: info.Rssi})
 
-		p := point.Point{
+		callback(point.Point{
 			Measurement: "bluetooth",
 			Fields:      fields,
 			Tags:        processor.tags,
-		}
-		s, err := p.String()
-		if err != nil {
-			continue
-		}
-		fmt.Println(s)
+		})
 	}
 }
