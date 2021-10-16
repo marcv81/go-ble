@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/marcv81/go-ble/ble"
+	"github.com/marcv81/go-ble/point"
 )
 
 func TestReadThermometer(t *testing.T) {
@@ -16,11 +17,11 @@ func TestReadThermometer(t *testing.T) {
 			0x04,
 		},
 	}
-	expected := Fields{
-		"temperature":     float32(25.4),
-		"humidity":        float32(43.55),
-		"battery_volt":    float32(3.115),
-		"battery_percent": uint8(100),
+	expected := []point.NamedValue{
+		{Name: "temperature", Value: float32(25.4)},
+		{Name: "humidity", Value: float32(43.55)},
+		{Name: "battery_volt", Value: float32(3.115)},
+		{Name: "battery_percent", Value: uint8(100)},
 	}
 	actual, err := ReadThermometer(input)
 	if err != nil {

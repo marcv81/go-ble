@@ -10,8 +10,6 @@ var (
 	errUnexpectedServiceDataUuid = errors.New("unexpected service data UUID")
 )
 
-type Fields map[string]interface{}
-
 // Advertisement types.
 const (
 	advertTypeServiceData = 0x16

@@ -13,8 +13,8 @@ Supported sensors
 
 A sample follows.
 
-    bluetooth,addr=a4:c1:38:d3:c0:6a,device=mi_thermometer temperature=26.51,humidity=82.69,battery_volt=3.005,battery_percent=89,rssi=-42
-    bluetooth,addr=5c:ca:d3:ed:7f:27,device=mi_scale weight=64.7,impedance=403,rssi=-57
+    bluetooth,device=mi_thermometer,addr=a4:c1:38:d3:c0:6a,location=bedroom temperature=26.51,humidity=82.69,battery_volt=3.005,battery_percent=89,rssi=-42
+    bluetooth,device=mi_scale,addr=5c:ca:d3:ed:7f:27 weight=64.7,impedance=403,rssi=-57
 
 # Installation
 

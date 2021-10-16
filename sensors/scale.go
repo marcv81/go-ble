@@ -4,10 +4,11 @@ import (
 	"encoding/binary"
 
 	"github.com/marcv81/go-ble/ble"
+	"github.com/marcv81/go-ble/point"
 )
 
 // Parses advertisements from a Mi body composition scale.
-func ReadScale(advert *ble.Advert) (Fields, error) {
+func ReadScale(advert *ble.Advert) ([]point.NamedValue, error) {
 	if advert.Type != advertTypeServiceData {
 		return nil, errUnexpectedAdvertType
 	}
@@ -26,12 +27,14 @@ func ReadScale(advert *ble.Advert) (Fields, error) {
 	weightReady := control&(1<<13) != 0
 	impedanceReady := control&(1<<9) != 0
 
-	fields := Fields{}
+	fields := []point.NamedValue{}
 	if weightReady && unitKilogram {
-		fields["weight"] = float32(binary.LittleEndian.Uint16(advert.Data[13:15])) / 200
+		weight := float32(binary.LittleEndian.Uint16(advert.Data[13:15])) / 200
+		fields = append(fields, point.NamedValue{Name: "weight", Value: weight})
 	}
 	if impedanceReady {
-		fields["impedance"] = binary.LittleEndian.Uint16(advert.Data[11:13])
+		impedance := binary.LittleEndian.Uint16(advert.Data[11:13])
+		fields = append(fields, point.NamedValue{Name: "impedance", Value: impedance})
 	}
 	return fields, nil
 }
