@@ -20,8 +20,8 @@ func indexProcessors(devices []DeviceConfig) map[string]processor {
 		tags := make([]point.NamedValue, 0, len(device.Tags)+2)
 		tags = append(tags, point.NamedValue{Name: "device", Value: device.Type})
 		tags = append(tags, point.NamedValue{Name: "addr", Value: device.MacAddress})
-		for name, value := range device.Tags {
-			tags = append(tags, point.NamedValue{Name: name, Value: value})
+		for _, tag := range device.Tags {
+			tags = append(tags, point.NamedValue{Name: tag.Name, Value: tag.Value})
 		}
 
 		var read func(*ble.Advert) ([]point.NamedValue, error)

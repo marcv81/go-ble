@@ -14,9 +14,15 @@ type AppConfig struct {
 
 // Device configuration.
 type DeviceConfig struct {
-	Type       string            `yaml:"type"`
-	MacAddress string            `yaml:"mac_address"`
-	Tags       map[string]string `yaml:"tags"`
+	Type       string      `yaml:"type"`
+	MacAddress string      `yaml:"mac_address"`
+	Tags       []TagConfig `yaml:"tags"`
+}
+
+// Tag configuration
+type TagConfig struct {
+	Name  string `yaml:"name"`
+	Value string `yaml:"value"`
 }
 
 // Reads the application configuration from a file.

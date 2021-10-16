@@ -13,12 +13,12 @@ func TestCore(t *testing.T) {
 		{
 			Type:       "mi_thermometer",
 			MacAddress: "11:22:33:44:55:66",
-			Tags:       map[string]string{"location": "bedroom"},
+			Tags:       []TagConfig{{Name: "location", Value: "bedroom"}},
 		},
 		{
 			Type:       "mi_scale",
 			MacAddress: "aa:bb:cc:dd:ee:ff",
-			Tags:       map[string]string{},
+			Tags:       []TagConfig{},
 		},
 	})
 	testCases := []struct {
