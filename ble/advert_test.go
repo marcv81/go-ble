@@ -6,34 +6,57 @@ import (
 )
 
 func TestCreateAdverts(t *testing.T) {
-	input := []byte{
-		1, 123,
-		4, 100, 1, 2, 3,
+	testCases := []struct {
+		in  []byte
+		out []Advert
+		err error
+	}{
+		// Valid advertisements.
+		{
+			in: []byte{
+				1, 123,
+				4, 100, 1, 2, 3,
+			},
+			out: []Advert{
+				{Type: 123, Data: []byte{}},
+				{Type: 100, Data: []byte{1, 2, 3}},
+			},
+			err: nil,
+		},
+		// Length = 0.
+		{
+			in:  []byte{0},
+			out: nil,
+			err: errInvalidAdvertLength,
+		},
+		// Length = 1 but no data.
+		{
+			in:  []byte{1},
+			out: nil,
+			err: errInvalidAdvertLength,
+		},
+		// Length = 4 but not enough data.
+		{
+			in:  []byte{4, 1, 2, 3},
+			out: nil,
+			err: errInvalidAdvertLength,
+		},
+		// Valid advertisement, then length = 1 but no data.
+		{
+			in:  []byte{1, 0, 1},
+			out: nil,
+			err: errInvalidAdvertLength,
+		},
 	}
-	expected := []Advert{
-		{Type: 123, Data: []byte{}},
-		{Type: 100, Data: []byte{1, 2, 3}},
-	}
-	actual, err := CreateAdverts(input)
-	if err != nil {
-		t.Fatalf("unexpected error: %s", err)
-	}
-	if !reflect.DeepEqual(expected, actual) {
-		t.Fatalf("expected: %v, actual: %v", expected, actual)
-	}
-}
-
-func TestCreateAdvertsErrors(t *testing.T) {
-	inputs := [][]byte{
-		{0},          // Length = 0
-		{1},          // Length = 1 but no data
-		{4, 1, 2, 3}, // Length = 4 but not enough data
-		{1, 0, 1},    // Valid advertisement, then length = 1 but no data
-	}
-	for _, input := range inputs {
-		_, err := CreateAdverts(input)
-		if err != errInvalidAdvertLength {
-			t.Fatalf("expected: %s, actual: %s", errInvalidAdvertLength, err)
+	for i, tc := range testCases {
+		out, err := CreateAdverts(tc.in)
+		if err != tc.err {
+			s := "test case %d error: expected %+v, actual %+v"
+			t.Fatalf(s, i, tc.err, err)
+		}
+		if !reflect.DeepEqual(out, tc.out) {
+			s := "test case %d output: expected %+v, actual %+v"
+			t.Fatalf(s, i, tc.out, out)
 		}
 	}
 }
