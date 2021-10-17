@@ -41,10 +41,10 @@ func main() {
 	}
 
 	// Scan for BLE devices and process the advertisements.
-	processors := indexProcessors(config.Devices)
+	router := newRouter(config.Devices)
 	scanner := cc2540.Scanner{ReadWriter: readWriter}
 	scanner.Scan(func(info *ble.DeviceInfo) {
-		process(processors, *info, func(p point.Point) {
+		router.route(info, func(p *point.Point) {
 			s, err := p.String()
 			if err != nil {
 				return

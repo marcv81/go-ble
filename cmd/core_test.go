@@ -9,7 +9,7 @@ import (
 )
 
 func TestCore(t *testing.T) {
-	processors := indexProcessors([]DeviceConfig{
+	router := newRouter([]DeviceConfig{
 		{
 			Type:       "mi_thermometer",
 			MacAddress: "11:22:33:44:55:66",
@@ -91,11 +91,11 @@ func TestCore(t *testing.T) {
 	}
 	for i, tc := range testCases {
 		calls := 0
-		process(processors, tc.in, func(out point.Point) {
+		router.route(&tc.in, func(out *point.Point) {
 			calls += 1
-			if !reflect.DeepEqual(out, tc.out) {
+			if !reflect.DeepEqual(*out, tc.out) {
 				s := "test case %d output: expected %+v, actual %+v"
-				t.Fatalf(s, i, tc.out, out)
+				t.Fatalf(s, i, tc.out, *out)
 			}
 		})
 		if calls != tc.calls {
