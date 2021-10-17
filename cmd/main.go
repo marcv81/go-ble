@@ -42,17 +42,14 @@ func main() {
 
 	// Scan for BLE devices and process the advertisements.
 	processors := indexProcessors(config.Devices)
-	dev := cc2540.Scanner{
-		ReadWriter: readWriter,
-		Callback: func(info *ble.DeviceInfo) {
-			process(processors, *info, func(p point.Point) {
-				s, err := p.String()
-				if err != nil {
-					return
-				}
-				fmt.Println(s)
-			})
-		},
-	}
-	dev.Scan()
+	scanner := cc2540.Scanner{ReadWriter: readWriter}
+	scanner.Scan(func(info *ble.DeviceInfo) {
+		process(processors, *info, func(p point.Point) {
+			s, err := p.String()
+			if err != nil {
+				return
+			}
+			fmt.Println(s)
+		})
+	})
 }

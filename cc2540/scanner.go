@@ -10,13 +10,12 @@ import (
 
 // BLE scanner.
 type Scanner struct {
-	ReadWriter io.ReadWriter         // ReadWriter to communicate with the HostTest firmware
-	Callback   func(*ble.DeviceInfo) // Callback to process BLE scan data
+	ReadWriter io.ReadWriter // ReadWriter to communicate with the HostTest firmware
 }
 
 // Listens to BLE advertisements.
 // Runs forever unless an error occurs.
-func (o *Scanner) Scan() error {
+func (o *Scanner) Scan(cb func(*ble.DeviceInfo)) error {
 	err := initCommand.send(o.ReadWriter)
 	if err != nil {
 		return err
@@ -26,7 +25,7 @@ func (o *Scanner) Scan() error {
 		if err != nil {
 			return err
 		}
-		err = o.handleEvent(ev)
+		err = o.handleEvent(ev, cb)
 		if err != nil {
 			return err
 		}
@@ -34,7 +33,7 @@ func (o *Scanner) Scan() error {
 }
 
 // Handles the HCI events received as we listen to BLE advertisements.
-func (o *Scanner) handleEvent(ev *event) error {
+func (o *Scanner) handleEvent(ev *event, cb func(*ble.DeviceInfo)) error {
 	if ev.eventCode != eventCodeVendor {
 		return nil
 	}
@@ -50,7 +49,7 @@ func (o *Scanner) handleEvent(ev *event) error {
 	// Silently ignore malformatted advertisements.
 	case opcodeDeviceInfo:
 		info, _ := createDeviceInfo(ev.data)
-		o.Callback(info)
+		cb(info)
 	}
 	return nil
 }
